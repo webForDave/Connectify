@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Connectify - Signup</title>
+    </head>
+    <body>
+        <h1>Sign up</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Sign Up</button>
+            <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        </form>
+    </body>
+</html>
