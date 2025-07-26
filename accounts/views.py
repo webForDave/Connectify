@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from django.contrib.auth.decorators import login_required
 
 def signup_view(request):
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
+            form.save()
             return redirect("login") 
     else:
         form = CustomUserCreationForm()
