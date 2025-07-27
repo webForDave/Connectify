@@ -17,8 +17,15 @@ def create_new_topic_view(request, slug):
             return redirect("community_detail", slug=community.slug)
     else:
         form = CreateTopicForm()
-    return render(request, "topics/create_topic.html", {"form": form, "community": community})
+    context = {
+        "form": form,
+        "community": community
+    }
+    return render(request, "topics/create_topic.html", context)
 
 def topic_detail_view(request, slug):
     topic = get_object_or_404(Topic, slug=slug)
-    return render(request, "topics/topic_detail.html", {"topic": topic})
+    context = {
+        "topic": topic
+    }
+    return render(request, "topics/topic_detail.html", context)

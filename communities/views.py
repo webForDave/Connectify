@@ -16,13 +16,19 @@ def create_community_view(request):
             return redirect("communities")
     else:
         form = CreateCommunityForm()
-    return render(request, "communities/create_community.html", {"form": form})
+    context = {"form": form}
+    return render(request, "communities/create_community.html", context)
 
 def list_communities_view(request):
     communities = Community.objects.all()
-    return render(request, "communities/home.html", {"communities": communities})
+    context = {"communities": communities}
+    return render(request, "communities/home.html", context)
 
 def community_detail_view(request, slug):
     community = get_object_or_404(Community, slug=slug)
-    topics = community.topic_set.all()
-    return render(request, "communities/community_detail.html", {"community": community, "topics": topics})
+    topics = community.topic_set.all() # REVERSE RELATIONSHIP (Parent asking for it's children)
+    context = {
+        "community": community,
+        "topics": topics
+    }
+    return render(request, "communities/community_detail.html", context)
