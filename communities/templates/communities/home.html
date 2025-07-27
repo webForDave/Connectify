@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Connectify</title>
+    </head>
+    <body>
+        <h1>Communities</h1>  
+        <a href="{% url 'create_community' %}">New community</a>
+        {% if not communities%} 
+            <p>No communities available yet.</p>
+        {%else%}
+            {%for community in communities%}  
+                <a href="{% url 'community_detail' community.slug %}"><h4><em>{{community.name}}</em></h4></a>
+                <p>{{community.description}}</p>
+            {%endfor%}
+        {%endif%}
+    </body>
+</html>

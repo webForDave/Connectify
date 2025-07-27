@@ -20,4 +20,9 @@ def create_community_view(request):
 
 def list_communities_view(request):
     communities = Community.objects.all()
-    return render(request, "communities/list_communities.html", {"communities": communities})
+    return render(request, "communities/home.html", {"communities": communities})
+
+def community_detail_view(request, slug):
+    community = get_object_or_404(Community, slug=slug)
+    topics = community.topic_set.all()
+    return render(request, "communities/community_detail.html", {"community": community, "topics": topics})

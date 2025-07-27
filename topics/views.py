@@ -2,23 +2,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Topic
 from .forms import CreateTopicForm
 from django.contrib.auth.decorators import login_required
-
-def home(request):
-    topics = Topic.objects.all()
-    return render(request, "topics/home.html", {"topics": topics})
+from communities.models import Community
 
 @login_required
-def create_new_topic_view(request):
+def create_new_topic_view(request, slug):
+    community = get_object_or_404(Community, slug=slug)
     if request.method == "POST":
         form = CreateTopicForm(request.POST)
         if form.is_valid():
             form_instance = form.save(commit=False)
             form_instance.author = request.user
+            form.instance.community = community
             form_instance.save()
-            return redirect("home")
+            return redirect("community_detail", slug=community.slug)
     else:
         form = CreateTopicForm()
-    return render(request, "topics/create_topic.html", {"form": form})
+    return render(request, "topics/create_topic.html", {"form": form, "community": community})
 
 def topic_detail_view(request, slug):
     topic = get_object_or_404(Topic, slug=slug)

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Connectify - {{community.name}}</title>
+    </head>
+    <body>
+        <h1>{{ community.name }}</h1>
+        <p>{{ community.description }}</p>
+
+        <h2>Topics in {{ community.name }}</h2>
+        {% if topics %}
+            <ul>
+                {% for topic in topics %}
+                    <li><a href="{% url 'topic_detail' topic.slug %}">{{ topic.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No topics found in this community yet.</p>
+        {% endif %}
+
+        <p><a href="{% url 'create_topic' community.slug %}">Create New Topic in {{ community.name }}</a></p>
+    </body>
+</html>
