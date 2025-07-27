@@ -5,16 +5,16 @@
     </head>
     <body>
         <h1>Connectify</h1>
+        <a href="{% url 'create_topic' %}">Create topic</a>
         {%if topics %}
             {%for topic in topics%}
                 <p>Title:<strong>{{topic.title}}</strong></p>
-                <p>Community:<em>{{topic.community}}</em></p>
-                <p>Created: {{topic.created_at}}</p>
-                <a href="{% url 'topic_detail' topic.slug %}">Read more</a>
+                <small>{{topic.community}} / {{topic.created_at}}</small>
+                <p><em>{{topic.author}}</em></p>
+                <p><a href="{% url 'topic_detail' topic.slug %}">Read more</a></p>
             {%endfor%}
         {%else%}
             <p>This space seem empty, create a new topic</p>
-            <a href="{% url 'create_topic' %}">Create topic</a>
         {%endif%}
     </body>
 </html>

@@ -4,15 +4,15 @@
         <title>Connectify - Communities</title>
     </head>
     <body>
-        <a href="{% url 'home' %}">Back</a>
+        <a href="{% url 'home' %}">Home</a>
         <h3>Communities</h3>  
         {% if not communities%} 
             <p>No communities here yet.</p>
         {%else%}
             {%for community in communities%}  
                 <h4><em>{{community.name}}</em></h4>
-                {{community.description}}
-                {{community.created_at}}   
+                <p>{{community.description}}</p>
+                <p>{{community.created_at}}</p>  
             {%endfor%}
         {%endif%}
     </body>
