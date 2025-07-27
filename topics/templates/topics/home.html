@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Connectify - Home</title>
+    </head>
+    <body>
+        <h1>Connectify</h1>
+        {%if topics %}
+            {%for topic in topics%}
+                <p>Title:<strong>{{topic.title}}</strong></p>
+                <p>Community:<em>{{topic.community}}</em></p>
+                <p>Created: {{topic.created_at}}</p>
+                <a href="{% url 'topic_detail' topic.slug %}">Read more</a>
+            {%endfor%}
+        {%else%}
+            <p>This space seem empty, create a new topic</p>
+            <a href="{% url 'create_topic' %}">Create topic</a>
+        {%endif%}
+    </body>
+</html>
