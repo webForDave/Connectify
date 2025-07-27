@@ -1,7 +1,7 @@
 from django.db import models
-from topics.models import Topic
 from django.conf import settings
 from autoslug import AutoSlugField
+
 class Community(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
