@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'topics.apps.TopicsConfig',
     'communities.apps.CommunitiesConfig',
+    'comments.apps.CommentsConfig',
     'autoslug',
 ]
 
