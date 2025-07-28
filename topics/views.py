@@ -25,7 +25,9 @@ def create_new_topic_view(request, slug):
 
 def topic_detail_view(request, slug):
     topic = get_object_or_404(Topic, slug=slug)
+    comments = topic.comment_set.all()
     context = {
-        "topic": topic
+        "topic": topic,
+        "comments": comments
     }
     return render(request, "topics/topic_detail.html", context)

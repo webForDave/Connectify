@@ -13,9 +13,10 @@ def create_comment_view(request, slug):
             comment_instance.author = request.user
             comment_instance.topic = topic
             comment_instance.save()
-            return redirect("topic_detail", slug=topic)
+            return redirect("topic_detail", slug=topic.slug)
     else:
         form = CreateCommentForm()
+    print(slug)
     context = {
         "form": form
     }

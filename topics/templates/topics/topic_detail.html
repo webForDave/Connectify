@@ -1,1 +1,20 @@
-topic detail
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Connectify - Comment</title>
+    </head>
+    <body>
+        <h1>{{topic.title}}</h1>
+        <div>{{topic.content}}</div>
+        <hr/>
+        <h3>Comments</h3>
+        <a href="{% url 'create_comment' topic.slug %}">Comment</a>
+        {%if comments %}
+            {%for comment in comments%}
+                <p>{{comment.author}}</p>
+                <p>{{comment.content}}</p>
+                <p>{{comment.ctreatd_at}}</p>
+            {%endfor%}
+        {%endif%}
+    </body>
+</html>

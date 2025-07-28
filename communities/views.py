@@ -20,7 +20,7 @@ def create_community_view(request):
     return render(request, "communities/create_community.html", context)
 
 def list_communities_view(request):
-    communities = Community.objects.all()
+    communities = Community.objects.all().order_by("-id")
     context = {"communities": communities}
     return render(request, "communities/home.html", context)
 
