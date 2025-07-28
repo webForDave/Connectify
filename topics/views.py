@@ -25,7 +25,7 @@ def create_new_topic_view(request, slug):
 
 def topic_detail_view(request, slug):
     topic = get_object_or_404(Topic, slug=slug)
-    comments = topic.comment_set.all()
+    comments = topic.comment_set.all().order_by("-id")
     context = {
         "topic": topic,
         "comments": comments

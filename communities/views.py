@@ -26,7 +26,7 @@ def list_communities_view(request):
 
 def community_detail_view(request, slug):
     community = get_object_or_404(Community, slug=slug)
-    topics = community.topic_set.all() # REVERSE RELATIONSHIP (Parent asking for it's children)
+    topics = community.topic_set.all().order_by("-id") # REVERSE RELATIONSHIP (Parent asking for it's children)
     context = {
         "community": community,
         "topics": topics
