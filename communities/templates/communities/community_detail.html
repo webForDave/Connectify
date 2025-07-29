@@ -1,23 +1,30 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Connectify - {{community.name}}</title>
-    </head>
-    <body>
-        <h1>{{ community.name }}</h1>
-        <p>{{ community.description }}</p>
+{% extends "base.html" %}
+{% block title %}{{ community.name }} | Connectify{% endblock %}
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-indigo-700">{{ community.name }}</h1>
+    <p class="text-gray-600 mt-2">{{ community.description }}</p>
+</div>
 
-        <h2>Topics in {{ community.name }}</h2>
-        {% if topics %}
-            <ul>
-                {% for topic in topics %}
-                    <li><a href="{% url 'topic_detail' topic.slug %}">{{ topic.title }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No topics found in this community yet.</p>
-        {% endif %}
+<div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-semibold text-gray-800">Topics</h2>
+    <a href="{% url 'create_topic' community.slug %}" class="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
+        <i class="fas fa-comment-alt"></i> New Topic
+    </a>
+</div>
 
-        <p><a href="{% url 'create_topic' community.slug %}">Create New Topic in {{ community.name }}</a></p>
-    </body>
-</html>
+{% if topics %}
+    <ul class="space-y-4">
+        {% for topic in topics %}
+            <li class="bg-white p-4 rounded-lg shadow hover:shadow-md transition">
+                <a href="{% url 'topic_detail' topic.slug %}" class="text-indigo-700 text-lg font-medium hover:underline">
+                    {{ topic.title }}
+                </a>
+                <p class="text-gray-500 text-sm">by {{ topic.author }} • {{ topic.created_at|date:"F j, Y" }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="text-gray-500 italic">No topics found in this community yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Connectify{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2d79f53f0.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient-to-tr from-slate-100 via-white to-slate-200 text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="{% url 'communities' %}" class="text-2xl font-bold text-indigo-600">Connectify</a>
+      <div class="space-x-4 text-sm">
+        {% if user.is_authenticated %}
+          <a href="{% url 'user_profile' user.username %}" class="text-gray-700 hover:text-indigo-600">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <form method="post" action="{% url 'logout' %}" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-sm text-gray-700 hover:text-red-600 hover:underline bg-transparent border-none cursor-pointer">
+            Logout
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="text-gray-700 hover:text-indigo-600">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </a>
+          <a href="{% url 'signup' %}" class="text-gray-700 hover:text-green-600">
+            <i class="fas fa-user-plus"></i> Signup
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="flex-grow container mx-auto px-4 py-8">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 py-6 text-sm bg-white shadow-inner">
+    &copy; 2025 Connectify. Built for communities.
+  </footer>
+
+</body>
+</html>

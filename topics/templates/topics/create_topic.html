@@ -1,14 +1,22 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Connectify - Create Tpoic</title>
-    </head>
-    <body>
-        <h1>Create Topic</h1>
-        <form method="post">
-            {%csrf_token%}
-            {{form.as_p}}
-            <button type="submit">Create</button>
-        </form>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}Create Topic | Connectify{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded shadow-md">
+    <h2 class="text-2xl font-bold text-indigo-600 mb-4">Start a New Discussion</h2>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">{{ field.label_tag }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-sm text-red-500">{{ field.errors }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
+            <i class="fas fa-paper-plane"></i> Publish Topic
+        </button>
+    </form>
+</div>
+{% endblock %}

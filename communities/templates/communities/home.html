@@ -1,18 +1,24 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Connectify</title>
-    </head>
-    <body>
-        <h1>Communities</h1>  
-        <a href="{% url 'create_community' %}">New community</a>
-        {% if not communities%} 
-            <p>No communities available yet.</p>
-        {%else%}
-            {%for community in communities%}  
-                <a href="{% url 'community_detail' community.slug %}"><h4><em>{{community.name}}</em></h4></a>
-                <p>{{community.description}}</p>
-            {%endfor%}
-        {%endif%}
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}Communities | Connectify{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Explore Communities</h1>
+    <a href="{% url 'create_community' %}" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+        <i class="fas fa-plus-circle"></i> New Community
+    </a>
+</div>
+
+{% if not communities %}
+    <p class="text-gray-600">No communities available yet.</p>
+{% else %}
+    <div class="grid md:grid-cols-2 gap-6">
+        {% for community in communities %}
+            <a href="{% url 'community_detail' community.slug %}" class="block bg-white p-5 rounded-lg shadow hover:shadow-md transition">
+                <h2 class="text-xl font-semibold text-indigo-700 mb-1">{{ community.name }}</h2>
+                <p class="text-gray-600 text-sm">{{ community.description|truncatewords:25 }}</p>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}
+ 

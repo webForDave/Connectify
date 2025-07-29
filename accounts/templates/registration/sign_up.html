@@ -1,15 +1,25 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Connectify - Signup</title>
-    </head>
-    <body>
-        <h1>Sign up</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{form.as_p}}
-            <button type="submit">Sign Up</button>
-            <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
-        </form>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}Signup | Connectify{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded shadow-md">
+    <h2 class="text-2xl font-bold text-green-600 mb-4">Join Connectify</h2>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label class="block text-gray-700 mb-1">{{ field.label_tag }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-sm text-red-500">{{ field.errors }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+            <i class="fas fa-user-plus"></i> Sign Up
+        </button>
+    </form>
+    <div class="mt-4 text-sm text-center text-gray-600">
+        <p>Already a member? <a href="{% url 'login' %}" class="text-indigo-600 hover:underline">Log In</a></p>
+    </div>
+</div>
+{% endblock %}
