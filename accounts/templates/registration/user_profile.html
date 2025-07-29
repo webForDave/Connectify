@@ -8,7 +8,7 @@
         </div>
         <div>
             <h2 class="text-xl font-semibold text-gray-800">{{ user.username }}</h2>
-            <p class="text-sm text-gray-500">Joined {{ user.date_joined|date:"F j, Y" }}</p>
+            <p class="text-sm text-gray-500">Joined {{ user.date_created|date:"F j, Y" }}</p>
         </div>
     </div>
     {% if user.bio %}
@@ -18,8 +18,8 @@
         </div>
     {% endif %}
     <div class="text-sm text-gray-500">
-        <p><strong>Posts:</strong> {{ user.posts.count }}</p>
-        <p><strong>Comments:</strong> {{ user.comments.count }}</p>
+        <p><strong>Topics:</strong> {{ topics_count }}</p>
+        <p><strong>Comments:</strong> {{ comments_count }}</p>
     </div>
 </div>
 {% endblock %}

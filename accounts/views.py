@@ -16,4 +16,6 @@ def signup_view(request):
 
 def user_profile_view(request, username):
     user = get_object_or_404(CustomUser, username=username)
-    return render(request, "registration/user_profile.html", {"user": user})
+    topics_count = user.topic_set.all().count()
+    comments_count = user.comment_set.all().count()
+    return render(request, "registration/user_profile.html", {"user": user, "topics_count": topics_count, "comments_count": comments_count})

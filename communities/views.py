@@ -13,13 +13,13 @@ def create_community_view(request):
             community_instance = form.save(commit=False)
             community_instance.author = request.user
             community_instance.save()
-            return redirect("communities")
+            return redirect("home")
     else:
         form = CreateCommunityForm()
     context = {"form": form}
     return render(request, "communities/create_community.html", context)
 
-def list_communities_view(request):
+def home(request):
     communities = Community.objects.all().order_by("-id")
     context = {"communities": communities}
     return render(request, "communities/home.html", context)

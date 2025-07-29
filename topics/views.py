@@ -3,6 +3,7 @@ from .models import Topic
 from .forms import CreateTopicForm
 from django.contrib.auth.decorators import login_required
 from communities.models import Community
+from comments.models import Comment
 
 @login_required
 def create_new_topic_view(request, slug):

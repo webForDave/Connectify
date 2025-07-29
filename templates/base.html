@@ -13,7 +13,7 @@
   <!-- Navbar -->
   <nav class="bg-white shadow">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="{% url 'communities' %}" class="text-2xl font-bold text-indigo-600">Connectify</a>
+      <a href="{% url 'home' %}" class="text-2xl font-bold text-indigo-600">Connectify</a>
       <div class="space-x-4 text-sm">
         {% if user.is_authenticated %}
           <a href="{% url 'user_profile' user.username %}" class="text-gray-700 hover:text-indigo-600">
