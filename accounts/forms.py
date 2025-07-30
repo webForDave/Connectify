@@ -44,7 +44,7 @@ class StyledLoginForm(AuthenticationForm):
 
         self.fields['username'].widget.attrs.update({
             'class': 'w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500',
-            'placeholder': 'Email or Username'
+            'placeholder': 'Email Address'
         })
 
         self.fields['password'].widget.attrs.update({

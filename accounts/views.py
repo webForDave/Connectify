@@ -1,18 +1,22 @@
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from .models import CustomUser
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from django.contrib.auth.decorators import login_required
 
 def signup_view(request):
+    redirect_to_after_login = request.GET.get('next', '')
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("login") 
+            login_url = reverse('login')
+            if redirect_to_after_login:
+                login_url += f"?next={redirect_to_after_login}"
+            return redirect(login_url) 
     else:
         form = CustomUserCreationForm()
-    return render(request, "registration/sign_up.html", {"form": form})
+    return render(request, "registration/sign_up.html", {"form": form, "next_url": redirect_to_after_login})
 
 def user_profile_view(request, username):
     user = get_object_or_404(CustomUser, username=username)

@@ -36,7 +36,7 @@
 
     <p class="text-center text-gray-600 text-sm">
         Don't have an account?
-        <a href="{% url 'signup' %}" class="text-indigo-500 hover:underline">Sign up</a>
+        <a href="{% url 'signup' %}?next={{ request.GET.next|urlencode }}" class="text-indigo-500 hover:underline">Sign up</a>
     </p>
 </div>
 {% endblock %}
