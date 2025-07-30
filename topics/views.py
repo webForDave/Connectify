@@ -42,7 +42,7 @@ def delete_topic_view(request, slug):
 
     if request.method == "POST":
         topic.delete()
-        return redirect("community_detail",)
+        return redirect("home")
     return render(request, "topics/delete_topic.html", {"topic": topic})
 
 def topic_detail_view(request, slug):
