@@ -7,7 +7,7 @@ class Topic(models.Model):
     title = models.CharField(max_length=150)
     content = models.TextField()
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    slug = AutoSlugField(populate_from="title", unique=True, always_update=True, default="")
+    slug = AutoSlugField(populate_from="title", unique=True, always_update=True, default="", max_length=250)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
