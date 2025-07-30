@@ -24,11 +24,34 @@ def create_new_topic_view(request, slug):
     }
     return render(request, "topics/create_topic.html", context)
 
+@login_required
+def update_topic(request, slug):
+    topic = get_object_or_404(Topic, slug=slug)
+    if request.method == "POST":
+        form = CreateTopicForm(request.POST, instance=topic)
+        if form.is_valid():
+            form.save()
+            return redirect("topic_detail", slug=slug)
+    else:
+        form = CreateTopicForm(instance=topic)
+    return render(request, "topics/update_topic.html", {"form": form})
+
+@login_required
+def delete_topic_view(request, slug):
+    topic = get_object_or_404(Topic, slug=slug)
+
+    if request.method == "POST":
+        topic.delete()
+        return redirect("community_detail")
+    return render(request, "topics/delete_topic.html", {})
+
 def topic_detail_view(request, slug):
+    user = request.user
     topic = get_object_or_404(Topic, slug=slug)
     comments = topic.comment_set.all().order_by("-id")
     context = {
         "topic": topic,
-        "comments": comments
+        "comments": comments,
+        "user": user
     }
     return render(request, "topics/topic_detail.html", context)
