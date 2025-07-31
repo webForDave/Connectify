@@ -12,7 +12,7 @@
         <p class="mt-2 text-gray-600">{{ topic.content|linebreaks }}</p>
 
         <p class="mt-4 text-sm text-gray-500">
-            Posted by {{ topic.author }} on {{ topic.created_at|date:"M j, Y" }}
+            Posted by <a href="{% url 'user_profile' topic.author %}" class="text-indigo-600 hover:underline hover:text-indigo-800 font-medium">{{ topic.author }}</a> on {{ topic.created_at|date:"M j, Y" }}
         </p>
 
         {%if not comments%}
@@ -49,7 +49,7 @@
             {% for comment in comments %}
                 <div class="bg-white p-4 rounded shadow-sm">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-700">{{ comment.author }}</span>
+                        <span class="text-sm font-medium text-gray-700"><a href="{% url 'user_profile' comment.author %}" class="text-indigo-600 hover:underline hover:text-indigo-800 font-medium">{{ comment.author }}</a></span>
                         <span class="text-xs text-gray-400">{{ comment.created_at|timesince }} ago</span>
                     </div>
                     <p class="mt-2 text-gray-600">{{ comment.content|linebreaks }}</p>

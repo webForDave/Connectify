@@ -20,7 +20,7 @@
                 <a href="{% url 'topic_detail' topic.slug %}" class="text-indigo-700 text-lg font-medium hover:underline">
                     {{ topic.title }}
                 </a>
-                <p class="text-gray-500 text-sm">by {{ topic.author }} • {{ topic.created_at|date:"F j, Y" }}</p>
+                <p class="text-gray-500 text-sm">by <a href="{% url 'user_profile' topic.author %}" class="text-indigo-600 hover:underline hover:text-indigo-800 font-medium">{{ topic.author }}</a> • {{ topic.created_at|date:"F j, Y" }}</p>
             </li>
         {% endfor %}
     </ul>
