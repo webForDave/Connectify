@@ -31,7 +31,7 @@ def update_topic(request, slug):
         form = CreateTopicForm(request.POST, instance=topic)
         if form.is_valid():
             form.save()
-            return redirect("topic_detail", slug=slug)
+            return redirect("topic_detail", slug=topic.slug)
     else:
         form = CreateTopicForm(instance=topic)
     return render(request, "topics/update_topic.html", {"form": form})
@@ -42,7 +42,7 @@ def delete_topic_view(request, slug):
 
     if request.method == "POST":
         topic.delete()
-        return redirect("home")
+        return redirect("community_detail", slug=topic.community.slug)
     return render(request, "topics/delete_topic.html", {"topic": topic})
 
 def topic_detail_view(request, slug):

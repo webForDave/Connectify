@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Edit Comment | Connectify{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow space-y-4">
+    <h1 class="text-2xl font-bold text-indigo-700">Edit Your Comment</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit"
+                class="mt-4 bg-indigo-600 text-white px-5 py-2 rounded hover:bg-indigo-700 transition">
+            Save Changes
+        </button>
+        <a href="javascript:history.back()"
+           class="ml-4 text-sm text-gray-600 hover:underline">Cancel</a>
+    </form>
+</div>
+{% endblock %}
