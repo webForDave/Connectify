@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile | Connectify{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-8 mt-10 rounded-lg shadow space-y-6">
+
+    <h2 class="text-2xl font-semibold text-indigo-700 mb-4">Edit Your Profile</h2>
+
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-sm text-red-500 mt-1">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div class="flex items-center justify-between">
+            <a href="{% url 'user_profile' request.user.username %}" class="text-sm text-gray-500 hover:underline">Cancel</a>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+                Save Changes
+            </button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

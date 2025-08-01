@@ -22,4 +22,27 @@ def user_profile_view(request, username):
     user = get_object_or_404(CustomUser, username=username)
     topics_count = user.topic_set.all().count()
     comments_count = user.comment_set.all().count()
-    return render(request, "registration/user_profile.html", {"user": user, "topics_count": topics_count, "comments_count": comments_count})
+    user_topics = user.topic_set.all()
+    user_comments = user.comment_set.all()
+
+    context = {
+        "user": user,
+        "topics_count": topics_count,
+        "comments_count": comments_count,
+        "user_topics": user_topics,
+        "user_comments": user_comments,
+    }
+    return render(request, "registration/user_profile.html", context)
+
+@login_required
+def update_profile(request, username):
+    user = get_object_or_404(CustomUser, username=username)
+
+    if request.method == "POST":
+        form = CustomUserChangeForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("user_profile", username=user.username)
+    else:
+        form = CustomUserChangeForm(instance=user)
+    return render(request, "registration/update_profile.html", {"form": form})

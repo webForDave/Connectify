@@ -10,4 +10,5 @@ urlpatterns = [
         template_name='registration/login.html',
         authentication_form=StyledLoginForm
     ), name='login'),
+    path("profile/<str:username>/update/", views.update_profile, name="update_profile"),
 ]

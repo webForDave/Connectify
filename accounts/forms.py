@@ -55,4 +55,14 @@ class StyledLoginForm(AuthenticationForm):
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ("email", "username", "bio")
+        fields = ("username", "bio",)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'password' in self.fields:
+            del self.fields['password']
+
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-indigo-300'
+            })
