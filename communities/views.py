@@ -32,3 +32,25 @@ def community_detail_view(request, slug):
         "topics": topics
     }
     return render(request, "communities/community_detail.html", context)
+
+
+@login_required
+def delete_community_view(request, slug):
+    community = get_object_or_404(Community, slug=slug)
+    user = request.user
+    if request.method == "POST":
+        community.delete()
+        return redirect("home")
+    return render(request, "communities/delete_community.html", {"user": user, "community": community})
+
+@login_required
+def update_community_view(request, slug):
+    community = get_object_or_404(Community, slug=slug)
+    if request.method == "POST":
+        form = CreateCommunityForm(request.POST, instance=community)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+    else:
+        form = CreateCommunityForm(instance=community)
+    return render(request, "communities/update_community.html", {"form": form})
