@@ -23,6 +23,7 @@ def create_comment_view(request, slug):
     }
     return render(request, "comments/create_comment.html", context)
 
+@login_required
 def update_comment_view(request, slug):
     comment = get_object_or_404(Comment, slug=slug)
     # topic = get_object_or_404(Topic, slug=topic_slug)
@@ -35,6 +36,7 @@ def update_comment_view(request, slug):
         form = CreateCommentForm(instance=comment)
     return render(request, "comments/update_comment.html", {"form": form})
 
+@login_required
 def delete_comment_view(request, slug):
     comment = get_object_or_404(Comment, slug=slug)
     if request.method == "POST":
