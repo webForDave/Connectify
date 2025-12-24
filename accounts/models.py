@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from username_generator import get_uname
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
@@ -26,7 +29,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=10, null=True, blank=True)
+    username = models.CharField(max_length=25, null=True, blank=True)
     email = models.EmailField(unique=True)
     bio = models.CharField(max_length=70, null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -40,3 +43,20 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+@receiver(post_save, sender=CustomUser)
+def generate_username(sender, instance, created, **kwargs):
+    if created:
+        generated_username = get_uname(min_size=10, max_size=25, underscores=True)
+        user = CustomUser.objects.filter(username=instance.username).first()
+
+        if user.username == None:
+            user.username = generated_username
+            user.save()
+        elif user.username != None:
+            if 'user' in user.username:
+                user.username = generated_username
+                user.save()
+        else:
+            user.username = generated_username
+            user.save()

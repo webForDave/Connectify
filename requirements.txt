@@ -14,3 +14,4 @@ PyJWT==2.10.1
 requests==2.32.5
 sqlparse==0.5.5
 urllib3==2.6.2
+username-generator==2.0.0
