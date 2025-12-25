@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .serializers import CommunityCreateSerializer, CommunitiesViewSerializer, CommunityViewSerializer, UpdateCommunitySerializer
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def community_view_create(request):
 
     if request.method == 'GET':
@@ -26,12 +26,17 @@ def community_view_create(request):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def community_detail(request, name):
     try:
         community = Community.objects.get(community_name__iexact=name)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method in ['PUT', 'DELETE']:
+        if community.created_by != request.user:
+            return Response({'detail': 'You do not have permission to perform this action.'},
+                            status=status.HTTP_403_FORBIDDEN)
     
     if request.method == 'GET':
         community.members_count = community.members.all().count()
