@@ -5,7 +5,7 @@ from rest_framework import serializers
 class CommunityCreateSerializer(ModelSerializer):
     class Meta:
         model = Community
-        fields = ['id', 'community_name', 'description']
+        fields = ['community_name', 'description']
 
 class CommunitiesViewSerializer(ModelSerializer):
     class Meta:

@@ -19,10 +19,8 @@ def community_view_create(request):
 
         if serializer.is_valid():
             serializer.save(created_by=request.user)
-            # adding the creator of a community as its first member
-            community = Community.objects.filter(id=serializer.data['id']).first()
+            community = Community.objects.get(community_name=serializer.validated_data['community_name'])
             community.members.add(request.user)
-            community.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -36,7 +34,8 @@ def community_detail(request, name):
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
-        community.members_count = len(community.members.all())
+        community.members_count = community.members.all().count()
+        community.save()
         serializer = CommunityViewSerializer(community)
         return Response(serializer.data)
     
@@ -52,3 +51,38 @@ def community_detail(request, name):
     if request.method == 'DELETE':
         community.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def join_community(request, name):
+    try:
+        community = Community.objects.get(community_name__iexact=name)
+    except Community.DoesNotExist:
+        return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.user in community.members.all():
+        return Response({'community': 'user already in community'})
+    else:
+        community.members.add(request.user)
+        community.members_count = community.members.all().count()
+        community.save()
+        return Response({'community': 'success'})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def leave_community(request, name):
+    try:
+        community = Community.objects.get(community_name__iexact=name)
+    except Community.DoesNotExist:
+        return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.user not in community.members.all():
+        return Response({'community': 'You are not a member of this community'})
+    else:
+        community.members.remove(request.user)
+        community.members_count = community.members.all().count()
+        community.save()
+        if community.members_count < 1:
+            community.delete()
+    return Response({'community': 'success'})
+    
