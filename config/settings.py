@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # local
     'accounts',
     'communities',
+    'posts',
 ]
 
 MIDDLEWARE = [
