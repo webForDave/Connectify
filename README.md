@@ -1,4 +1,4 @@
-# Jekasorso
+# Jekasoro
 > Engage in beautiful conversations with like minded people.
 
 ## Description
