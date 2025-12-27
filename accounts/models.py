@@ -1,6 +1,8 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db.models.signals import post_save
+from django.utils import timezone
 from django.dispatch import receiver
 from username_generator import get_uname
 
@@ -43,6 +45,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def user_joined_recently(self):
+        return self.date_joined >= datetime.timedelta(days=30)
 
 @receiver(post_save, sender=CustomUser)
 def generate_username(sender, instance, created, **kwargs):
@@ -60,3 +65,4 @@ def generate_username(sender, instance, created, **kwargs):
         else:
             user.username = generated_username
             user.save()
+            

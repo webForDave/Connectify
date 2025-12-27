@@ -17,6 +17,13 @@ def community_view_create(request):
     if request.method == 'POST':
         serializer = CommunityCreateSerializer(data=request.data)
 
+        #ensures that users account is gte 30 days before creating communities to prevent spam commmunities
+        if request.user.is_authenticated and request.user.user_joined_recently():
+            return Response(
+                {'detail': 'You must be a member for at least 30 days to create a community.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
         if serializer.is_valid():
             serializer.save(created_by=request.user)
             community = Community.objects.get(community_name=serializer.validated_data['community_name'])
