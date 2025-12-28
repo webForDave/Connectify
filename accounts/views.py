@@ -2,25 +2,39 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .serializers import CustomUserDetailsSerializer, CustomRegularUserDetailsSerializer
+from .serializers import CustomUserDetailsSerializer, CustomRegularUserDetailsSerializer, CustomUpdateUserSerializer
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def user_detials(request, username):
+def user_details(request, username):
 
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'users': 'user not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    if request.user == user:
-        serializer = CustomUserDetailsSerializer(user)
-        return Response(serializer.data)
-    
-    else:
-        serializer = CustomRegularUserDetailsSerializer(user)
-        return Response(serializer.data)
+    if request.method == 'GET':
+        if request.user == user:
+            serializer = CustomUserDetailsSerializer(user)
+            return Response(serializer.data)
+        
+        else:
+            serializer = CustomRegularUserDetailsSerializer(user)
+            return Response(serializer.data)
+        
+    if request.method == 'PUT':
+        serializer = CustomUpdateUserSerializer(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'users': 'user updated succeefully'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    if request.method == 'DELETE':
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

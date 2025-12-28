@@ -24,3 +24,8 @@ class CustomRegularUserDetailsSerializer(ModelSerializer): # For unauthenticated
     class Meta:
         model = User
         fields = ['username', 'bio', 'date_joined', 'communities_joined', 'communities_created']
+
+class CustomUpdateUserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'bio']
