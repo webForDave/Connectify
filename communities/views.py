@@ -1,12 +1,21 @@
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Community
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import  BasePermission, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.decorators import api_view, permission_classes
 from .serializers import CommunityCreateSerializer, CommunitiesViewSerializer, CommunityViewSerializer, UpdateCommunitySerializer
 
+class UserIsNotNew(BasePermission):
+    #ensures that user accounts lte 30 days cannot create communities to prevent spam commmunities
+    message = 'You must be a member for at least 30 days to create a community.'
+
+    def has_permission(self, request, view):
+            return request.user.is_authenticated and not request.user.user_joined_recently()
+            
+    
+
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@permission_classes([IsAuthenticatedOrReadOnly, UserIsNotNew])
 def community_view_create(request):
 
     if request.method == 'GET':
@@ -16,13 +25,6 @@ def community_view_create(request):
 
     if request.method == 'POST':
         serializer = CommunityCreateSerializer(data=request.data)
-
-        #ensures that users account is gte 30 days before creating communities to prevent spam commmunities
-        if request.user.is_authenticated and request.user.user_joined_recently():
-            return Response(
-                {'detail': 'You must be a member for at least 30 days to create a community.'},
-                status=status.HTTP_403_FORBIDDEN
-            )
         
         if serializer.is_valid():
             serializer.save(created_by=request.user)
