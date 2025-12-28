@@ -54,6 +54,8 @@ def post_details(request, community_name, post_title):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     if request.method == 'DELETE':
         if request.user != post.created_by:
