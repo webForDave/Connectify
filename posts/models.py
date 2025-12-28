@@ -4,11 +4,21 @@ from communities.models import Community
 User = get_user_model()
 
 class Post(models.Model):
-    title = models.CharField(max_length=50, null=False, blank=False, unique=True)
+    title = models.CharField(max_length=50, null=False, blank=False)
     content = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='posts_created')
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='community_posts')
     date_created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-date_created']
+
     def __str__(self):
         return self.title
+
+class Comment(models.Model):
+    content = models.TextField()
+    comment_author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comments')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_comments')
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    date_created = models.DateTimeField(auto_now_add=True)

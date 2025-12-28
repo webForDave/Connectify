@@ -4,7 +4,7 @@ from .models import Post
 from communities.models import Community
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .serializers import PostsSerializer, CreatePostSerializer, PostSerializer
+from .serializers import PostsSerializer, CreatePostSerializer, PostSerializer, CreateCommentSerializer, PostCommentsSerializer
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticatedOrReadOnly])
@@ -25,7 +25,7 @@ def post_view_create(request, community_name):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'GET':
-        posts = Post.objects.all()
+        posts = community.community_posts.all()
         serializer = PostsSerializer(posts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -62,3 +62,33 @@ def post_details(request, community_name, post_title):
             return Response({'posts': 'You do not have permission to perform this action'}, status=status.HTTP_403_FORBIDDEN)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def comment_view_create(request, community_name, post_title):
+
+    try:
+        community = Community.objects.get(community_name__iexact=community_name)
+    except Community.DoesNotExist:
+        return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        post = Post.objects.get(title__iexact=post_title)
+    except Post.DoesNotExist:
+        return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = PostCommentsSerializer(post.post_comments, many=True)
+        return Response(serializer.data)
+
+    if request.method == 'POST':
+        serializer = CreateCommentSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(post_id=post.id, comment_author=request.user)
+            # post.post_comments.add()
+            # post.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
