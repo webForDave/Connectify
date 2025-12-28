@@ -47,7 +47,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
     
     def user_joined_recently(self):
-        return self.date_joined >= datetime.timedelta(days=30)
+        return (timezone.now() - self.date_joined).days < 30
 
 @receiver(post_save, sender=CustomUser)
 def generate_username(sender, instance, created, **kwargs):
