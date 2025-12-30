@@ -31,13 +31,15 @@ def post_view_create(request, community_name):
     
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def post_details(request, community_name, post_title):
+def post_details(request, community_name, post_slug):
     try:
         community = Community.objects.get(community_name__iexact=community_name)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    post = Post.objects.filter(title__iexact=post_title).first()
+    post = Post.objects.get(
+        slug=post_slug,
+        community=community)
 
     if post == None:
         return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -66,15 +68,14 @@ def post_details(request, community_name, post_title):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def comment_view_create(request, community_name, post_title):
-
+def comment_view_create(request, community_name, post_slug):
     try:
         community = Community.objects.get(community_name__iexact=community_name)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
     try:
-        post = Post.objects.get(title__iexact=post_title)
+        post = Post.objects.get(slug=post_slug)
     except Post.DoesNotExist:
         return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
     

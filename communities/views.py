@@ -38,23 +38,25 @@ def community_view_create(request):
         
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def community_detail(request, name):
+def community_detail(request, community_slug):
     try:
-        community = Community.objects.get(community_name__iexact=name)
+        community = Community.objects.get(slug=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
-    
-    if request.method in ['PUT', 'DELETE']:
-        if community.created_by != request.user:
-            return Response({'detail': 'You do not have permission to perform this action.'},
-                            status=status.HTTP_403_FORBIDDEN)
-    
+    print("URL slug:", community_slug)
     if request.method == 'GET':
         community.members_count = community.members.all().count()
         community.save()
         serializer = CommunityViewSerializer(community)
         return Response(serializer.data)
     
+
+    if request.method in ['PUT', 'DELETE']:
+        if community.created_by != request.user:
+            return Response({'detail': 'You do not have permission to perform this action.'},
+                            status=status.HTTP_403_FORBIDDEN)
+    
+
     if request.method  == 'PUT':
         serializer = UpdateCommunitySerializer(community, data=request.data)
 
@@ -70,9 +72,9 @@ def community_detail(request, name):
     
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def join_community(request, name):
+def join_community(request, community_slug):
     try:
-        community = Community.objects.get(community_name__iexact=name)
+        community = Community.objects.get(slug=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -86,9 +88,9 @@ def join_community(request, name):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def leave_community(request, name):
+def leave_community(request, community_slug):
     try:
-        community = Community.objects.get(community_name__iexact=name)
+        community = Community.objects.get(slug=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
