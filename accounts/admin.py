@@ -1,5 +1,9 @@
+
+# core Django
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
+# accounts app 
 from .forms import RegistrationForm, CustomUserChange
 from .models import CustomUser
 

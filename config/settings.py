@@ -148,6 +148,5 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_UNIQUE_EMAIL = True
 
 REST_AUTH = {
-    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer',
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
 }

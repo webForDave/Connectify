@@ -1,6 +1,11 @@
+# core Django.
+from django.urls import path
+
+# third party.
 from dj_rest_auth.views import LoginView, LogoutView
 from dj_rest_auth.registration.views import RegisterView
-from django.urls import path
+
+# accounts app.
 from . import views
 
 urlpatterns = [
