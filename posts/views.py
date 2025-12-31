@@ -8,10 +8,10 @@ from .serializers import PostsSerializer, CreatePostSerializer, PostSerializer, 
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def post_view_create(request, community_name):
+def post_view_create(request, community_slug):
 
     try:
-        community = Community.objects.get(community_name__iexact=community_name)
+        community = Community.objects.get(slug__iexact=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -31,15 +31,13 @@ def post_view_create(request, community_name):
     
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def post_details(request, community_name, post_slug):
+def post_details(request, community_slug, post_slug):
     try:
-        community = Community.objects.get(community_name__iexact=community_name)
+        community = Community.objects.get(slug__iexact=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    post = Post.objects.get(
-        slug=post_slug,
-        community=community)
+    post = Post.objects.get(slug__iexact=post_slug, community=community)
 
     if post == None:
         return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
