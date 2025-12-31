@@ -1,17 +1,20 @@
+# third party.
 from rest_framework.serializers import ModelSerializer
+
+# communities app.
 from .models import Community
 
-class CommunityCreateSerializer(ModelSerializer):
+class CreateCommunitySerializer(ModelSerializer):
     class Meta:
         model = Community
         fields = ['community_name', 'description']
 
-class CommunitiesViewSerializer(ModelSerializer):
+class CommunitiesSerializer(ModelSerializer):
     class Meta:
         model = Community
         fields = ['community_name', 'slug', 'description', 'date_created']
 
-class CommunityViewSerializer(ModelSerializer):
+class CommunitySerializer(ModelSerializer):
     class Meta:
         model = Community
         fields = ['community_name', 'slug', 'description', 'date_created', 'members_count', 'community_posts']

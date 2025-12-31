@@ -1,32 +1,36 @@
+# third party.
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import(
+    IsAuthenticated, 
+    IsAuthenticatedOrReadOnly,
+)
+from rest_framework.decorators import(
+    api_view,
+    permission_classes,
+)
+from .serializers import(
+    CreateCommunitySerializer, 
+    CommunitiesSerializer, 
+    CommunitySerializer, 
+    UpdateCommunitySerializer,
+)
+
+# communities app.
 from .models import Community
-from rest_framework.permissions import  BasePermission, IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.decorators import api_view, permission_classes
-from .serializers import CommunityCreateSerializer, CommunitiesViewSerializer, CommunityViewSerializer, UpdateCommunitySerializer
-
-class UserIsNotNew(BasePermission):
-    #ensures that user accounts lte 30 days cannot create communities to prevent spam commmunities
-    message = 'You must be a member for at least 30 days to create a community.'
-
-    def has_permission(self, request, view):
-            if request.method == 'GET':
-                return True
-            return request.user.is_authenticated and not request.user.user_joined_recently()
-            
-    
+from .permissions import UserIsNotNew
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticatedOrReadOnly, UserIsNotNew])
-def community_view_create(request):
+def communities(request):
 
     if request.method == 'GET':
         communities = Community.objects.all()
-        serializer = CommunitiesViewSerializer(communities, many=True)
+        serializer = CommunitiesSerializer(communities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     if request.method == 'POST':
-        serializer = CommunityCreateSerializer(data=request.data)
+        serializer = CreateCommunitySerializer(data=request.data)
         
         if serializer.is_valid():
             serializer.save(created_by=request.user)
@@ -38,22 +42,26 @@ def community_view_create(request):
         
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def community_detail(request, community_slug):
+def community(request, community_slug):
+
     try:
         community = Community.objects.get(slug__iexact=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
     if request.method == 'GET':
         community.members_count = community.members.all().count()
         community.save()
-        serializer = CommunityViewSerializer(community)
+        serializer = CommunitySerializer(community)
         return Response(serializer.data)
     
 
     if request.method in ['PUT', 'DELETE']:
         if community.created_by != request.user:
-            return Response({'detail': 'You do not have permission to perform this action.'},
-                            status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {'detail': 'You do not have permission to perform this action.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
     
 
     if request.method  == 'PUT':
@@ -72,6 +80,7 @@ def community_detail(request, community_slug):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def join_community(request, community_slug):
+    
     try:
         community = Community.objects.get(slug__iexact=community_slug)
     except Community.DoesNotExist:

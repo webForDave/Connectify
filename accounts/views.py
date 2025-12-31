@@ -36,11 +36,12 @@ def user_details(request, username):
             return Response(serializer.data)
     
     # Runs before a PUT or DELETE request to determine the permission of the user.
-    if request.user != user:
-        return Response(
-            {'users': 'You do not have permission to perform this action'}, 
-            status=status.HTTP_403_FORBIDDEN
-        )
+    if request.method in ['PUT', 'DELETE']:
+        if request.user != user:
+            return Response(
+                {'users': 'You do not have permission to perform this action'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
         
     if request.method == 'PUT':
 

@@ -1,6 +1,9 @@
+# core Django.
 from django.db import models
-from django_extensions.db.models import AutoSlugField
 from django.contrib.auth import get_user_model
+
+# third party.
+from django_extensions.db.models import AutoSlugField
 
 User = get_user_model()
 
