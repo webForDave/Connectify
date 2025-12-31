@@ -1,6 +1,5 @@
 from rest_framework.serializers import ModelSerializer
 from .models import Community
-from rest_framework import serializers
 
 class CommunityCreateSerializer(ModelSerializer):
     class Meta:
@@ -10,11 +9,12 @@ class CommunityCreateSerializer(ModelSerializer):
 class CommunitiesViewSerializer(ModelSerializer):
     class Meta:
         model = Community
-        fields = ['community_name', 'description', 'date_created']
+        fields = ['community_name', 'slug', 'description', 'date_created']
 
 class CommunityViewSerializer(ModelSerializer):
     class Meta:
         model = Community
+        fields = ['community_name', 'slug', 'description', 'date_created', 'members_count']
         fields = ['community_name', 'description', 'date_created', 'members_count', "community_posts"]
 
 class UpdateCommunitySerializer(ModelSerializer):
