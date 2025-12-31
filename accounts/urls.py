@@ -1,4 +1,4 @@
-from dj_rest_auth.views import LoginView, UserDetailsView, LogoutView
+from dj_rest_auth.views import LoginView, LogoutView
 from dj_rest_auth.registration.views import RegisterView
 from django.urls import path
 from . import views

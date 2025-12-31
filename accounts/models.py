@@ -59,6 +59,9 @@ def generate_username(sender, instance, created, **kwargs):
             user.username = generated_username
             user.save()
         elif user.username != None:
+            # By defult, django allauth assigns the email as the username. 
+            # The username becomes 'user<id> if the email is too long.
+            # This changes the username if it contains the word 'user'.
             if 'user' in user.username:
                 user.username = generated_username
                 user.save()

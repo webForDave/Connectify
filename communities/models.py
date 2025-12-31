@@ -13,5 +13,8 @@ class Community(models.Model):
     members = models.ManyToManyField(User, related_name='communities_joined')
     members_count = models.IntegerField(default=0)
 
+    class Meta:
+        ordering = ['-date_created']
+
     def __str__(self):
         return self.community_name
