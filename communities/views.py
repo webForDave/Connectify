@@ -21,7 +21,7 @@ from .models import Community
 from .permissions import UserIsNotNew
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticatedOrReadOnly, UserIsNotNew])
+@permission_classes([IsAuthenticatedOrReadOnly, ])
 def communities(request):
 
     if request.method == 'GET':

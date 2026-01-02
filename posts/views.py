@@ -1,10 +1,20 @@
+# third party django
 from rest_framework import status
 from rest_framework.response import Response
-from .models import Post, Comment
 from communities.models import Community
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .serializers import PostsSerializer, CreatePostSerializer, PostSerializer, CreateCommentSerializer, PostCommentsSerializer
+
+# posts app.
+from .models import Post, Comment
+from .serializers import (
+    PostsSerializer, 
+    CreatePostSerializer, 
+    PostSerializer, 
+    CreateCommentSerializer, 
+    PostCommentsSerializer, 
+    UpdateCommentSerializer,
+)
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticatedOrReadOnly])
@@ -66,9 +76,9 @@ def post_details(request, community_slug, post_slug):
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def comment_view_create(request, community_name, post_slug):
+def comment_view_create(request, community_slug, post_slug):
     try:
-        community = Community.objects.get(community_name__iexact=community_name)
+        community = Community.objects.get(slug__iexact=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -93,34 +103,39 @@ def comment_view_create(request, community_name, post_slug):
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticatedOrReadOnly])
-def comment_details(request, community_name, post_title, comment_slug):
+def comment_details(request, community_slug, post_slug, comment_id):
 
     try:
-        community = Community.objects.get(community_name__iexact=community_name)
+        Community.objects.get(slug__iexact=community_slug)
     except Community.DoesNotExist:
         return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
     
     try:
-        post = Post.objects.get(title__iexact=post_title)
+        post = Post.objects.get(slug__iexact=post_slug)
     except Post.DoesNotExist:
         return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
     
     try:
-        comment = Comment.objects.get(comment_slug=comment_slug)
+        comment = Comment.objects.get(id=comment_id)
     except Comment.DoesNotExist:
         return Response({'comments': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
         serializer = PostCommentsSerializer(comment)
         return Response(serializer.data)
+    
+    if request.user != comment.comment_author:
+        return Response({'comments': 'You do not have permission to perform this action'}, status=status.HTTP_403_FORBIDDEN)
 
     if request.method == 'PUT':
-        if request.user != comment.comment_author:
-            return Response({'comments': 'You do not have permission to perform this action'}, status=status.HTTP_403_FORBIDDEN)
-        serializer = CreateCommentSerializer(data=request.data)
+        serializer = UpdateCommentSerializer(comment, data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(comment_author=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    if request.method == 'DELETE':
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
