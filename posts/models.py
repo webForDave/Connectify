@@ -11,7 +11,7 @@ class Post(models.Model):
     slug = AutoSlugField(populate_from='title', unique=True, overwrite=False)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='community_posts')
     date_created = models.DateTimeField(auto_now_add=True)
-
+    
     class Meta:
         ordering = ['-date_created']
 
@@ -25,3 +25,6 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_comments')
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
     date_created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date_created']

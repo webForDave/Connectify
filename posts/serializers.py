@@ -24,9 +24,14 @@ class CreateCommentSerializer(ModelSerializer):
 class PostCommentsSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'content', 'slug', 'comment_author', 'date_created', 'replies']
+        fields = ['id', 'content', 'slug', 'parent', 'comment_author', 'date_created', 'replies']
 
 class UpdateCommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
         fields = ['content']
+
+class CommentRepliesSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'content', 'comment_author', 'post', 'parent', 'date_created']
