@@ -5,8 +5,11 @@ from communities.models import Community
 User = get_user_model()
 
 class Post(models.Model):
-    title = models.CharField(max_length=50, null=False, blank=False)
+    title = models.CharField(unique=True, max_length=50, null=False, blank=False)
     content = models.TextField()
+    up_voters = models.ManyToManyField(User, related_name='upvoted_posts')
+    down_voters = models.ManyToManyField(User, blank=True, related_name='downvoted_posts')
+    vote_count = models.IntegerField(default=0)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='posts_created')
     slug = AutoSlugField(populate_from='title', unique=True, overwrite=False)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='community_posts')
