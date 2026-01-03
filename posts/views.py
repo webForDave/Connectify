@@ -223,6 +223,95 @@ def comment_details(request, community_slug, post_slug, comment_id):
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+@api_view(['POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def upvote_comment(request, community_slug, post_slug, comment_id):
+
+    try:
+        Community.objects.get(slug__iexact=community_slug)
+    except Community.DoesNotExist:
+        return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        post = Post.objects.get(slug=post_slug)
+    except Post.DoesNotExist:
+        return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return Response({'comments': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        if request.user in comment.up_voters.all():
+            return Response({'comments': 'You already casted a vote on this comment'})
+        else:
+            if request.user in comment.down_voters.all():
+                comment.down_voters.remove(request.user)
+            comment.up_voters.add(request.user)
+            comment.vote_count = len(comment.up_voters.all()) - len(comment.down_voters.all())
+            comment.save()
+            return Response({'comment': 'voted'})
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def downvote_comment(request, community_slug, post_slug, comment_id):
+
+    try:
+        Community.objects.get(slug__iexact=community_slug)
+    except Community.DoesNotExist:
+        return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        post = Post.objects.get(slug=post_slug)
+    except Post.DoesNotExist:
+        return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return Response({'comments': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        if request.user in comment.down_voters.all():
+            return Response({'comments': 'You already casted a vote on this comment'})
+        else:
+            if request.user in comment.up_voters.all():
+                comment.up_voters.remove(request.user)
+            comment.down_voters.add(request.user)
+            comment.vote_count = len(comment.up_voters.all()) - len(comment.down_voters.all())
+
+            comment.save()
+            return Response({'comment': 'voted'})
+        
+@api_view(['POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def remove_vote_on_comment(request, community_slug, post_slug, comment_id):
+
+    try:
+        Community.objects.get(slug__iexact=community_slug)
+    except Community.DoesNotExist:
+        return Response({'communities': 'Community not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        post = Post.objects.get(slug=post_slug)
+    except Post.DoesNotExist:
+        return Response({'posts': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+        return Response({'comments': 'Comment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'POST':
+        if request.user in comment.down_voters.all():
+            comment.down_voters.remove(request.user)
+        elif request.user in comment.up_voters.all():
+            comment.up_voters.remove(request.user)
+        comment.vote_count = len(comment.up_voters.all()) - len(comment.down_voters.all())
+        comment.save()
+        return Response({'post': 'success'})
+    
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def replies_view_create(request, community_slug, post_slug, comment_id):
